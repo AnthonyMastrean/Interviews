@@ -2,7 +2,7 @@ $CACHE_EXPIRY = (Get-Date).AddDays(-1)
 $CACHE_DIR    = ".cache"
 
 function Get-Review([string] $url, [string] $item) {
-  Write-Progress -Activity "Indexing College Reviews" -Status "Fetching Review" -CurrentOperation $url
+  Write-Progress -ParentId 1 -Id 2 -Activity "Fetching Reviews" -CurrentOperation $url
 
   $progressPreference = "SilentlyContinue"
   (Invoke-WebRequest $url).Content | Set-Content $item
@@ -34,12 +34,14 @@ function Initialize-ReviewCache {
     foreach($url in $InputObject) {
       $item = Get-CachePath $url
 
+      Write-Progress -Id 1 -Activity "Indexing College Reviews"
+
       if(-not(Test-CachePath $item)) {
-        Invoke-FetchReview $url $item
+        Get-Review $url $item
       }
 
       if(Test-CacheExpiry $item) {
-        Invoke-FetchReview $url $item
+        Get-Review $url $item
       }
 
       $item
