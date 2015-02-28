@@ -18,7 +18,4 @@
 
 Get-ChildItem niche\*.ps1 | %{ . $_ }
 
-$stop_words = Get-Content stopWords.txt
-$urls = Get-Content urls.txt
-
-$idx = $urls | Get-Review | Write-ReviewIndex
+$idx = Get-Content urls.txt | Get-Review | Write-ReviewIndex
