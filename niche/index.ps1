@@ -1,43 +1,39 @@
 $HTML_CODE = '&\w*;'
 $PUNCTUATION = '[^\w\s]'
 
-function Write-ReviewIndex { 
+function Invoke-ParseReview {
+  param(
+    [string] $target
+  )
+
+  $school, $reviews = (Get-Content $target) -split "`n"
+  $target | Select-Object -Property @{Name = "School"; Expression = {$school}}, @{Name = "Reviews"; Expression = {$reviews}}
+}
+
+function Invoke-IndexReview {
   [CmdletBinding()]
   param(
-    [Parameter(
-      Mandatory = $true, 
-      Position = 0, 
-      ValueFromPipeline = $true, 
-      ValueFromPipelinebyPropertyName = $true)]
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
     [PSObject[]] $InputObject,
-    [Parameter(
-      Mandatory = $true,
-      Position = 1)]
-    [string[]] $StopWords = Get-Content stopWords.txt
+    [Parameter(Mandatory = $true)]
+    [string[]] $StopWords = (Get-Content .\stopWords.txt)
   )
 
   $index = @{}
-  foreach($item in $Input) {
-    $processed++
-    $completed = $processed / $Input.count * 100
+  $Input `
+    | %{ $_ -replace $HTML_CODE, ""  } `
+    | %{ $_ -replace $PUNCTUATION, "" } `
+    | %{ -split $_ } `
+    | Sort-Object `
+    | Get-Unique `
+    | ?{ $StopWords -notcontains $_ } `
+    | %{ 
+      Write-Progress -Activity "Indexing College Reviews" -Status "Indexing Reviews" -CurrentOperation $review.School
 
-    Write-Progress -Activity "Indexing College Reviews" -Status "Indexing Reviews" -CurrentOperation $item.School -PercentComplete $completed
-
-    $item.Reviews `
-      | %{ $_ -replace $HTML_CODE, ""  } `
-      | %{ $_ -replace $PUNCTUATION, "" } `
-      | %{ -split $_ } `
-      | Sort-Object `
-      | Get-Unique `
-      | ?{ $stopwords -notcontains $_ } `
-      | %{ 
-        if(-not $index[$_]) { $index.Add($_, @{}) }
-        if(-not $index[$_][$item.School]){ $index[$_].Add($item.School, 0) }
-        $index[$_][$item.School] += 1 
-      }
-  }
-
-  Write-Progress -Activity "Indexing College Reviews" -Completed
+      if(-not $index[$_]) { $index.Add($_, @{}) }
+      if(-not $index[$_][$review.School]){ $index[$_].Add($review.School, 0) }
+      $index[$_][$review.School] += 1 
+    }
 
   $index
 }

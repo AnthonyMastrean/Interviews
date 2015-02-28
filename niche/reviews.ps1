@@ -1,27 +1,50 @@
-function Get-Review {
+$CACHE_EXPIRY = (Get-Date).AddDays(-1)
+$CACHE_DIR    = ".cache"
+
+function Get-Review([string] $url, [string] $item) {
+  Write-Progress -Activity "Indexing College Reviews" -Status "Fetching Review" -CurrentOperation $url
+
+  $progressPreference = "SilentlyContinue"
+  (Invoke-WebRequest $url).Content | Set-Content $item
+  $progressPreference = "Continue"
+}
+
+function Test-CachePath([string] $item) {
+  Test-Path $item
+}
+
+function Test-CacheExpiry([string] $item) {
+  (Get-ChildItem $item).LastWriteTime -le $CACHE_EXPIRY
+}
+
+function Get-CachePath([string] $url) {
+  Join-Path $CACHE_DIR (Split-Path $url -Leaf)
+}
+
+function Initialize-ReviewCache {
   [CmdletBinding()]
   param(
-    [Parameter(
-      Mandatory = $true, 
-      Position = 0, 
-      ValueFromPipeline = $true, 
-      ValueFromPipelinebyPropertyName = $true)]
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
     [string[]] $InputObject
   )
 
-  foreach ($item in $Input) {
-    $processed++
-    $completed = $processed / $Input.count * 100
+  BEGIN{}
 
-    Write-Progress -Activity "Indexing College Reviews" -Status "Fetching URLs" -CurrentOperation $item -PercentComplete $completed
+  PROCESS{
+    foreach($url in $InputObject) {
+      $item = Get-CachePath $url
 
-    $progressPreference = "SilentlyContinue"
-    $content = (Invoke-WebRequest $item).Content
-    $progressPreference = "Continue"
+      if(-not(Test-CachePath $item)) {
+        Invoke-FetchReview $url $item
+      }
 
-    $school, $reviews = $content -split "`n"
-    $item | Select-Object -Property @{Name = "School"; Expression = {$school}}, @{Name = "Reviews"; Expression = {$reviews}}
+      if(Test-CacheExpiry $item) {
+        Invoke-FetchReview $url $item
+      }
+
+      $item
+    }
   }
-
-  Write-Progress -Activity "Indexing College Reviews" -Completed
+  
+  END{}
 }

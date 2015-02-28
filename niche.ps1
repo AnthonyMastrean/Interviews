@@ -16,6 +16,10 @@
 #   $idx["keyword"] | %{ Write-Host "Matches ${count} reviews for ${school}" }
 # 
 
-Get-ChildItem niche\*.ps1 | %{ . $_ }
+Get-ChildItem .\niche\*.ps1 | %{ . $_ }
 
-$idx = Get-Content urls.txt | Get-Review | Write-ReviewIndex
+Get-Content .\urls.txt `
+  | Initialize-ReviewCache
+  # | %{ Invoke-ParseReview $_ } `
+  # | %{ Invoke-IndexReview $_ (Get-Content .\stopWords.txt) } `
+  # | Export-CliXml .\.index.xml
