@@ -1,27 +1,45 @@
 #!/usr/bin/env bash
 # vim: set ft=ruby:
 
-# This file executes as a bash script, which turns around and executes Ruby via
-# the line below. The -x argument to Ruby makes it discard everything before
-# the second "!ruby" shebang. This allows us to work on Linux, where the
-# shebang can only have one argument so we can't directly say
-# "#!/usr/bin/env ruby --disable-gems". Thanks for that, Linux.
-#
-# If this seems confusing, don't worry. You can treat it as a normal Ruby file
-# starting with the "!ruby" shebang below.
-
 exec /usr/bin/env ruby --disable-gems -x "$0" $*
 #!ruby
 
 class Niche
-  def main
-    puts "Hello, Niche!"
+  def main(keyword)
+    @reviews = $stdin.readlines.map{ |file| Review.new(File.readlines(file.chomp)) }
+    @search = Search.new(keyword, @reviews)
+    puts @search.results
+  end
+end
+
+class Search
+  attr_reader :keyword, :results
+
+  def initialize(keyword, reviews)
+    @keyword = keyword
+    @results = reviews.find_all{ |review| review.scan(keyword) }
+  end
+end
+
+class Review
+  attr_reader :school, :reviews
+
+  def initialize(text)
+    @school, *@reviews = *text.map(&:chomp)
+  end
+
+  def scan(keyword)
+    @reviews.map{ |review| review.scan(keyword) }.flatten.count
+  end
+
+  def to_s()
+    "#{@school}: #{@reviews.count} reviews"
   end
 end
 
 if $0 == __FILE__
   begin
-    Niche.new.main
+    Niche.new.main(ARGV.first || "")
   rescue Interrupt
     exit(1)
   end
