@@ -4,18 +4,6 @@ function Get-Review([string] $url, [string] $item) {
   $progressPreference = "Continue"
 }
 
-function Test-CachePath([string] $item) {
-  Test-Path $item
-}
-
-function Test-CacheExpiry([string] $item) {
-  (Get-ChildItem $item).LastWriteTime -le $CACHE_EXPIRY
-}
-
-function Get-CachePath([string] $url) {
-  Join-Path $CACHE_DIR (Split-Path $url -Leaf)
-}
-
 function Initialize-ReviewCache {
   [CmdletBinding()]
   param(
@@ -29,13 +17,13 @@ function Initialize-ReviewCache {
     $progress++
     $completed = $progress / $Input.count * 100
 
-    $item = Get-CachePath $url
+    $item = Join-Path $CACHE_DIR (Split-Path $url -Leaf)
 
-    if(-not(Test-CachePath $item)) {
+    if(-not(Test-Path $item)) {
       Get-Review $url $item
     }
 
-    if(Test-CacheExpiry $item) {
+    if((Get-ChildItem $item).LastWriteTime -le $CACHE_EXPIRY) {
       Get-Review $url $item
     }
 
