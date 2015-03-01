@@ -1,12 +1,17 @@
-$INDEX = Import-CliXml index.xml
+$CACHE_EXPIRY = (Get-Date).AddDays(-1)
+$CACHE_DIR    = ".cache"
 
 Get-ChildItem niche\*.ps1 | %{ . $_ }
+Get-Content urls.txt | Initialize-ReviewCache
 
-function Refresh-ReviewIndex {
-  Get-Content urls.txt `
-    | Initialize-ReviewCache `
-    | Initialize-ReviewIndex (Get-Content stopWords.txt) `
-    | Export-CliXml index.xml
+function reviewsfor {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string] $keyword
+  )
+
+  Search-ReviewIndex $keyword | Format-ReviewIndex
 }
 
-Export-ModuleMember -Function Refresh-ReviewIndex, Search-ReviewIndex, Print-ReviewIndex
+Export-ModuleMember -Function reviewsfor, Search-ReviewIndex, Format-ReviewIndex

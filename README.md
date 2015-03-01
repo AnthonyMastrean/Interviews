@@ -8,7 +8,7 @@ Clone the PowerShell branch of this repository.
 PS> git clone git@github.com:AnthonyMastrean/niche.git --branch ps --single-branch niche
 ```
 
-Import the Niche module to access the functions.
+Import the Niche module to kickoff indexing and provide access to search functions.
 
 ```
 PS> Import-Module niche\niche.psm1
@@ -16,37 +16,54 @@ PS> Import-Module niche\niche.psm1
 
 ### Overview
 
-The module provides a few external commands.
+The module provides a few external commands. The short command `reviewsfor` combines searching and pretty-printing.
 
 ```
 PS> Get-Command -Module Niche
 
 CommandType     Name                                               ModuleName
 -----------     ----                                               ----------
-Function        Print-ReviewIndex                                  niche
-Function        Refresh-ReviewIndex                                niche
+Function        reviewsfor                                         niche
+Function        Format-ReviewIndex                                 niche
 Function        Search-ReviewIndex                                 niche
 ```
 
-Start by refreshing the review index, which should take a few minutes (depending on your connection speed). You will see progress on your screen. A cache of reviews will be stored locally in `.cache`. The index will be persisted at `index.xml`.
-
 ### Example Output
 
-With the index created, you're ready to search!
+With the reviews cached, you're ready to search!
 
 ```
 PS> Search-ReviewIndex "baseball"
 
-Name   Value
-----   -----
+School                               Count
+------                               -----
+Tacoma Community College                 1
+Northern State University                1
+Lake Michigan College                    1
+Mercer County Community College          1
+Concordia University - Wisconsin         2
+California State University - Fresno     1
+Ozark Christian College                  2
+University of Wisconsin - Stout          1
+Avila University                         1
+California Baptist University            1
 ```
 
-And we have provided a pretty-printing function that sorts, limits, and formats the table. This and other interaction/design choices have been influenced by PowerShell idioms: passing objects, formatting by piping to print functions, etc.
+You can pipe that output through a pretty printer to sort, limit, and format the data.
 
 ```
-PS> Search-ReviewIndex "baseball" | Print-ReviewIndex
+PS> Search-ReviewIndex "baseball" | Format-ReviewIndex
 
-Name   Value
-----   -----
-
+School                                          Count
+------                                          -----
+Concordia University - Wisconsin                    2
+Dawson Community College                            2
+Ozark Christian College                             2
+Avila University                                    1
+California Baptist University                       1
+California State University - Chico                 1
+California State University - Fresno                1
+City Colleges of Chicago - Kennedy-King College     1
+Columbia College Chicago                            1
+Concordia University Irvine                         1
 ```
