@@ -1,8 +1,8 @@
 function Search-ReviewIndex($keyword) {
   Get-ChildItem $CACHE_DIR `
     | Select-String $keyword `
-    | Group-Object Filename `
-    | Select-Object -Property @{Name="School";Expression={$school,$rest = (Get-Content (Join-Path $CACHE_DIR $_.Name)) -split "`n"; $school}},@{Name="Count";Expression={$_.Count}} 
+    | Group-Object Path `
+    | Select-Object -Property @{Name="School";Expression={$school,$rest = (Get-Content $_.Name) -split "`n"; $school}},@{Name="Count";Expression={$_.Count}}
 }
 
 function Format-ReviewIndex {
