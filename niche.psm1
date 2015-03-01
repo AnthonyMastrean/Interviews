@@ -2,9 +2,11 @@
 #
 #   PS> Import-Module niche
 #   PS> Search-ReviewIndex "keyword"
-#   Matches <count> reviews for <school>
-#   Matches <count> reviews for <school>
-#   Matches <count> reviews for <school>
+#
+#   Name  Value
+#   ----  -----
+#   Foo   3
+#   Bar   1
 # 
 
 $INDEX = Import-CliXml .\.index.xml
@@ -19,7 +21,20 @@ function Refresh-ReviewIndex {
 }
 
 function Search-ReviewIndex($keyword) {
-  $INDEX[$keyword] | Write-Host
+  $INDEX[$keyword]
 }
 
-Export-ModuleMember -Function Refresh-ReviewIndex, Search-ReviewIndex
+function Print-SearchResults {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+    [PSObject] $InputObject
+  )
+
+  $InputObject.GetEnumerator() `
+    | Sort-Object Value -Descending `
+    | Select-Object -First 10 `
+    | Format-Table -AutoSize
+}
+
+Export-ModuleMember -Function Refresh-ReviewIndex, Search-ReviewIndex, Print-SearchResults
