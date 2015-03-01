@@ -11,7 +11,7 @@ PS> git clone git@github.com:AnthonyMastrean/niche.git --branch ps --single-bran
 Import the Niche module to access the functions.
 
 ```
-PS> Import-Module .\niche\niche.psm1
+PS> Import-Module niche\niche.psm1
 ```
 
 ### Overview
@@ -28,11 +28,11 @@ Function        Refresh-ReviewIndex                                niche
 Function        Search-ReviewIndex                                 niche
 ```
 
-Start by Refreshing the review index, which should take a few minutes (depending on your connection speed). You will see progress on your screen. A cache of reviews will be stored locally in `.\.cache\`. The index will be created as a "dotfile" at `.\.index.xml`
+Start by refreshing the review index, which should take a few minutes (depending on your connection speed). You will see progress on your screen. A cache of reviews will be stored locally in `.cache`. The index will be persisted at `index.xml`.
 
 ### Example Output
 
-With the cache prepared and index created, you're ready to search!
+With the index created, you're ready to search!
 
 ```
 PS> Search-ReviewIndex "baseball"
