@@ -1,8 +1,9 @@
+$HERE         = $PsScriptRoot
 $CACHE_EXPIRY = (Get-Date).AddDays(-1)
 $CACHE_DIR    = ".cache"
 
-Get-ChildItem niche\*.ps1 | %{ . $_ }
-Get-Content urls.txt | Initialize-ReviewCache
+Get-ChildItem $HERE\niche\*.ps1 | %{ . $_ }
+Get-Content $HERE\urls.txt | Initialize-ReviewCache
 
 function reviewsfor {
   [CmdletBinding()]
