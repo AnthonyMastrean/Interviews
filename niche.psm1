@@ -20,21 +20,4 @@ function Refresh-ReviewIndex {
     | Export-CliXml .\.index.xml  
 }
 
-function Search-ReviewIndex($keyword) {
-  $INDEX[$keyword]
-}
-
-function Print-SearchResults {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-    [PSObject] $InputObject
-  )
-
-  $InputObject.GetEnumerator() `
-    | Sort-Object Value -Descending `
-    | Select-Object -First 10 `
-    | Format-Table -AutoSize
-}
-
-Export-ModuleMember -Function Refresh-ReviewIndex, Search-ReviewIndex, Print-SearchResults
+Export-ModuleMember -Function Refresh-ReviewIndex, Search-ReviewIndex, Print-ReviewIndex
