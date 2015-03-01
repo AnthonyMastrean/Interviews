@@ -1,14 +1,3 @@
-# Let's say we have an entry point like this...
-#
-#   PS> Import-Module niche
-#   PS> Search-ReviewIndex "keyword"
-#
-#   Name  Value
-#   ----  -----
-#   Foo   3
-#   Bar   1
-# 
-
 $INDEX = Import-CliXml .\.index.xml
 
 Get-ChildItem .\niche\*.ps1 | %{ . $_ }
