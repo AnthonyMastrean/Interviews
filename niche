@@ -6,9 +6,9 @@ exec /usr/bin/env ruby --disable-gems -x "$0" $*
 
 class Niche
   def main(keyword)
-    @reviews = $stdin.readlines.map{ |file| Review.new(File.readlines(file.chomp)) }
+    @reviews = $stdin.readlines.map(&:chomp).map{ |file| Review.new(File.readlines(file)) }
     @search = Search.new(keyword, @reviews)
-    puts @search.results
+    puts @search.to_s
   end
 end
 
@@ -17,7 +17,11 @@ class Search
 
   def initialize(keyword, reviews)
     @keyword = keyword
-    @results = reviews.find_all{ |review| review.scan(keyword) }
+    @results = reviews.find_all{ |review| review.search(keyword) != 0 }
+  end
+
+  def to_s
+    @results.each(&:to_s)
   end
 end
 
@@ -28,12 +32,12 @@ class Review
     @school, *@reviews = *text.map(&:chomp)
   end
 
-  def scan(keyword)
-    @reviews.map{ |review| review.scan(keyword) }.flatten.count
+  def search(keyword)
+    @reviews.count{ |review| review.include?(keyword) }
   end
 
   def to_s()
-    "#{@school}: #{@reviews.count} reviews"
+    "#{@school}: #{@reviews.count} total reviews"
   end
 end
 
