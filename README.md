@@ -2,15 +2,16 @@
 
 ## Indexing College Reviews
 
+> This version is incomplete and depends on an existing cache of text files.
+
 ### Overview
 
-Clone the Ruby branch of this repository.
+Clone this repository and switch to the Ruby branch.
 
 ```
-$ git clone https://<username>@github.com/AnthonyMastrean/niche.git --branch ruby --single-branch niche
+$ git clone https://<username>@github.com/AnthonyMastrean/niche.git
+$ git checkout ruby
 ```
-
-> This version is incomplete and depends on an existing cache of text files.
 
 Pipe the list of cached reviews to the command and provide a keyword for searching.
 
