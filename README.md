@@ -15,7 +15,7 @@ $ git clone https://<username>@github.com/AnthonyMastrean/niche.git --branch rub
 Pipe the list of cached reviews to the command and provide a keyword for searching.
 
 ```
-$ ls .cache/*.txt | niche "baseball"
+$ ls .cache/*.txt | ./niche "baseball"
 ```
 
 ### Example Output
@@ -23,7 +23,7 @@ $ ls .cache/*.txt | niche "baseball"
 The results are sorted by count and name.
 
 ```
-$ ls .cache/*.txt | niche "baseball"
+$ ls .cache/*.txt | ./niche "baseball"
 
 Concordia University - Wisconsin: 2 reviews
 Dawson Community College: 2 reviews
@@ -36,7 +36,7 @@ California State University - Chico: 1 reviews
 You can limit the total output using normal bash commands. For example, the top 3 search results:
 
 ```
-$ ls .cache/*.txt | niche "baseball" | head -3
+$ ls .cache/*.txt | ./niche "baseball" | head -3
 
 Concordia University - Wisconsin: 2 reviews
 Dawson Community College: 2 reviews
