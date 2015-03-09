@@ -6,29 +6,33 @@ exec /usr/bin/env ruby --disable-gems -x "$0" $*
 
 class Niche
   def main(keyword)
-    @reviews = $stdin.readlines.map(&:chomp).map{ |file| Review.from_file(File.readlines(file)) }
-    @search = Search.new(keyword, @reviews)
-    puts @search.to_s
+    @profiles = $stdin.readlines.map{ |file| Profile.from_file(File.readlines(file.chomp)) }
+    @search = Search.new(keyword, @profiles)
+    puts @search.print()
   end
 end
 
 class Search
   attr_reader :keyword, :results
 
-  def initialize(keyword, reviews)
+  def initialize(keyword, profiles)
     @keyword = keyword
-    @results = reviews.map{ |review| review.search(keyword) }
+    @results = profiles.map{ |profile| profile.search(keyword) }.find_all{ |profile| profile.reviews.count != 0}
   end
 
-  def to_s
+  def print()
+    @results.sort_by{ |result| [-result.reviews.count, result.school] }.each(&:to_s)
+  end
+
+  def to_s()
     @results.each(&:to_s)
   end
 end
 
-class Review
+class Profile
   def self.from_file(text)
     school, *reviews = *text.map(&:chomp)
-    Review.new(school, reviews)
+    Profile.new(school, reviews)
   end
 
   attr_reader :school, :reviews
@@ -39,7 +43,7 @@ class Review
   end
 
   def search(keyword)
-    Review.new(@school, @reviews.find_all{ |review| review.include?(keyword) })
+    Profile.new(@school, @reviews.find_all{ |review| review.include?(keyword) })
   end
 
   def to_s()
