@@ -41,7 +41,4 @@ $ ls .cache/*.txt | niche "baseball" | head -3
 Concordia University - Wisconsin: 2 reviews
 Dawson Community College: 2 reviews
 Ozark Christian College: 2 reviews
-Avila University: 1 reviews
-California Baptist University: 1 reviews
-California State University - Chico: 1 reviews
 ```
