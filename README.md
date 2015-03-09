@@ -49,7 +49,7 @@ Avila University                         1
 California Baptist University            1
 ```
 
-You can pipe that output through a pretty printer to sort, limit, and format the data.
+You can pipe that output through a pretty printer to sort and format the data.
 
 ```
 PS> Search-ReviewIndex "baseball" | Format-ReviewIndex
@@ -66,4 +66,16 @@ California State University - Fresno                1
 City Colleges of Chicago - Kennedy-King College     1
 Columbia College Chicago                            1
 Concordia University Irvine                         1
+```
+
+Use the common `Select-Object` cmdlet to limit the output to a reasonable length.
+
+```
+PS> Search-ReviewIndex "baseball" | Format-ReviewIndex | Select-Object -First 3
+
+School                                          Count
+------                                          -----
+Concordia University - Wisconsin                    2
+Dawson Community College                            2
+Ozark Christian College                             2
 ```

@@ -14,6 +14,5 @@ function Format-ReviewIndex {
 
   $Input `
     | Sort-Object @{Expression={$_.Count};Descending=$true}, School `
-    | Select-Object -First 10 `
     | Format-Table -AutoSize
 }
