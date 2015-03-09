@@ -8,30 +8,13 @@ class Niche
   def main(keyword)
     @profiles = $stdin.readlines.map{ |file| Profile.from_file(File.readlines(file.chomp)) }
     @search = Search.new(keyword, @profiles)
-    puts @search.print()
-  end
-end
-
-class Search
-  attr_reader :keyword, :results
-
-  def initialize(keyword, profiles)
-    @keyword = keyword
-    @results = profiles.map{ |profile| profile.search(keyword) }.find_all{ |profile| profile.reviews.count != 0}
-  end
-
-  def print()
-    @results.sort_by{ |result| [-result.reviews.count, result.school] }.each(&:to_s)
-  end
-
-  def to_s()
-    @results.each(&:to_s)
+    puts(@search.print())
   end
 end
 
 class Profile
-  def self.from_file(text)
-    school, *reviews = *text.map(&:chomp)
+  def self.from_file(lines)
+    school, *reviews = *lines.map(&:chomp)
     Profile.new(school, reviews)
   end
 
@@ -43,7 +26,8 @@ class Profile
   end
 
   def search(keyword)
-    Profile.new(@school, @reviews.find_all{ |review| review.include?(keyword) })
+    results = @reviews.find_all{ |review| review.include?(keyword) }
+    Profile.new(@school, results)
   end
 
   def to_s()
@@ -51,9 +35,26 @@ class Profile
   end
 end
 
+class Search
+  attr_reader :keyword, :results
+
+  def initialize(keyword, profiles)
+    @keyword = keyword
+    @results = profiles.map{ |profile| profile.search(keyword) }.find_all{ |profile| profile.reviews.count != 0 }
+  end
+
+  def print()
+    @results.sort_by{ |result| [-result.reviews.count, result.school] }.each(&:to_s)
+  end
+
+  def to_s()
+    @results.each(&:to_s)
+  end
+end
+
 if $0 == __FILE__
   begin
-    Niche.new.main(ARGV.first || "")
+    Niche.new.main(*ARGV)
   rescue Interrupt
     exit(1)
   end
