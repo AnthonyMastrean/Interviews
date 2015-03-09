@@ -5,7 +5,7 @@
 Clone the PowerShell branch of this repository.
 
 ```
-PS> git clone https://github.com/AnthonyMastrean/niche.git --branch ps --single-branch niche
+PS> git clone https://<username>@github.com/AnthonyMastrean/niche.git --branch ps --single-branch niche
 ```
 
 Import the Niche module to kickoff indexing and provide access to search functions.
