@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+# vim: set ft=ruby:
+
+exec /usr/bin/env ruby --disable-gems -x "$0" $*
+#!ruby
+
+require 'csv'
+require 'pp'
+
+class MedSage
+  def main()
+    orders = []
+    patients = []
+    invoices = []
+
+    headers = {
+      OrderRecord.headers => ->(row) { orders << OrderRecord.from_csv(row) },
+      PatientRecord.headers => ->(row) { patients << PatientRecord.from_csv(row) },
+      InvoiceRecord.headers => ->(row) { invoices << InvoiceRecord.from_csv(row) },
+    }
+
+    $stdin.readlines.each do |file|
+      CSV.foreach(file.chomp, headers: true) do |row|
+        headers[row.headers.sort].call(row)
+      end
+    end
+
+    active_orders = orders \
+      .group_by{ |order| order.id } \
+      .select{ |key, value| value.last.active? } \
+      .map{ |key, value| value.last }
+
+    active_patients = patients \
+      .group_by{ |patient| patient.id } \
+      .select{ |key, value| value.last.active? } \
+      .map{ |key, value| value.last }
+
+    active_invoices = invoices \
+      .group_by{ |invoice| [invoice.patient_id, invoice.order_id] } \
+      .select{ |key, value| value.last.active? } \
+      .map{ |key, value| value.last }
+
+    active_orders.each do |order|
+      puts ""
+      puts "================================================================================"
+      puts "Order: #{order.category}"
+      puts "--------------------------------------------------------------------------------"
+
+      active_invoices.select{ |invoice| invoice.order_id == order.id }.each do |invoice|
+        patient = active_patients.find{ |patient| patient.id == invoice.patient_id }
+        puts "Patient: #{patient.name}" if patient
+      end
+
+      puts "================================================================================"
+    end
+  end
+end
+
+class PatientRecord
+  HEADERS = ['patient_id', 'patient_name', 'state'].sort
+
+  def self.headers
+    HEADERS
+  end
+
+  def self.from_csv(row)
+    PatientRecord.new(row['patient_id'], row['patient_name'], row['state'])
+  end
+
+  attr_reader :id, :name, :state
+
+  def initialize(id, name, state)
+    @id = id
+    @name = name
+    @state = state
+  end
+
+  def inspect
+    "#<Patient|id: #{@id}; name: #{@name}; state: #{@state}>"
+  end
+
+  def to_s
+    inspect
+  end
+
+  def active?
+    @state == 'active'
+  end
+end
+
+class OrderRecord
+  HEADERS = ['order_id', 'category', 'state'].sort
+
+  def self.headers
+    HEADERS
+  end
+
+  def self.from_csv(row)
+    OrderRecord.new(row['order_id'], row['category'], row['state'])
+  end
+
+  attr_reader :id, :category, :state
+
+  def initialize(id, category, state)
+    @id = id
+    @category = category
+    @state = state
+  end
+
+  def inspect
+    "#<Order|id: #{@id}; category: #{@category}; state: #{@state}>"
+  end
+
+  def to_s
+    inspect
+  end
+
+  def active?
+    @state == 'active'
+  end
+end
+
+class InvoiceRecord
+  HEADERS = ['patient_id', 'order_id', 'state'].sort
+
+  def self.headers
+    HEADERS
+  end
+
+  def self.from_csv(row)
+    InvoiceRecord.new(row['patient_id'], row['order_id'], row['state'])
+  end
+
+  attr_reader :patient_id, :order_id, :state
+
+  def initialize(patient_id, order_id, state)
+    @patient_id = patient_id
+    @order_id = order_id
+    @state = state
+  end
+
+  def inspect
+    "#<Invoice|patient_id: #{@patient_id}; order_id: #{@order_id}; state: #{@state}>"
+  end
+
+  def to_s
+    inspect
+  end
+
+  def active?
+    @state == 'active'
+  end
+end
+
+if $0 == __FILE__
+  begin
+    MedSage.new.main(*ARGV)
+  rescue Interrupt
+    exit(1)
+  end
+end
