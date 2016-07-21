@@ -1,18 +1,11 @@
-# Niche Recruiting Challenges
+# Recruiting Challenges
 
 ## Indexing College Reviews
 
-Clone this repository and switch to the PowerShell branch.
+Import the module to kickoff indexing and provide access to search functions.
 
 ```
-PS> git clone https://<username>@github.com/AnthonyMastrean/niche.git
-PS> git checkout ps
-```
-
-Import the Niche module to kickoff indexing and provide access to search functions.
-
-```
-PS> Import-Module niche\niche.psm1
+PS> Import-Module main.psm1
 ```
 
 ### Overview
@@ -20,13 +13,13 @@ PS> Import-Module niche\niche.psm1
 The module provides a few external commands. The short command `reviewsfor` combines searching and pretty-printing.
 
 ```
-PS> Get-Command -Module Niche
+PS> Get-Command -Module Main
 
 CommandType     Name                                               ModuleName
 -----------     ----                                               ----------
-Function        reviewsfor                                         niche
-Function        Format-ReviewIndex                                 niche
-Function        Search-ReviewIndex                                 niche
+Function        reviewsfor                                         main
+Function        Format-ReviewIndex                                 main
+Function        Search-ReviewIndex                                 main
 ```
 
 ### Example Output

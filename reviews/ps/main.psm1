@@ -1,7 +1,7 @@
 $CACHE_EXPIRY = (Get-Date).AddDays(-1)
 $CACHE_DIR    = Join-Path $PSSCRIPTROOT ".cache"
 
-Get-ChildItem $PSSCRIPTROOT\niche\*.ps1 | %{ . $_ }
+Get-ChildItem $PSSCRIPTROOT\main\*.ps1 | %{ . $_ }
 
 New-Item $CACHE_DIR -Type Directory -Force | Out-Null
 Get-Content $PSSCRIPTROOT\urls.txt | Initialize-ReviewCache

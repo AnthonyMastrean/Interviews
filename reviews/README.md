@@ -1,4 +1,4 @@
-# Niche Recruiting Challenges
+# Recruiting Challenges
 
 This task is not designed to test your ability to code exotic data structures to support full-text search. Your program only needs to support searches for single, complete, whitespace-separated, alpha-numeric keywords. We would like to see that you understand where latency exists and that you have techniques to mitigate it, as well as code organization and structure. You may implement your solution in any language you like, but you should pick one that is well-suited for the task at hand.
 

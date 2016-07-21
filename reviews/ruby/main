@@ -4,7 +4,7 @@
 exec /usr/bin/env ruby --disable-gems -x "$0" $*
 #!ruby
 
-class Niche
+class Main
   def main(keyword)
     @profiles = $stdin.readlines.map{ |file| Profile.from_file(File.readlines(file.chomp)) }
     @search = Search.new(keyword, @profiles)
@@ -54,7 +54,7 @@ end
 
 if $0 == __FILE__
   begin
-    Niche.new.main(*ARGV)
+    Main.new.main(*ARGV)
   rescue Interrupt
     exit(1)
   end

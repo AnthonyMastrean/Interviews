@@ -1,4 +1,4 @@
-# Niche Recruiting Challenges
+# Recruiting Challenges
 
 ## Indexing College Reviews
 
@@ -6,17 +6,10 @@
 
 ### Overview
 
-Clone this repository and switch to the Ruby branch.
-
-```
-$ git clone https://<username>@github.com/AnthonyMastrean/niche.git
-$ git checkout ruby
-```
-
 Pipe the list of cached reviews to the command and provide a keyword for searching.
 
 ```
-$ ls .cache/*.txt | ./niche "baseball"
+$ ls .cache/*.txt | ./main "baseball"
 ```
 
 ### Example Output
@@ -24,7 +17,7 @@ $ ls .cache/*.txt | ./niche "baseball"
 The results are sorted by count and name.
 
 ```
-$ ls .cache/*.txt | ./niche "baseball"
+$ ls .cache/*.txt | ./main "baseball"
 
 Concordia University - Wisconsin: 2 reviews
 Dawson Community College: 2 reviews
@@ -37,7 +30,7 @@ California State University - Chico: 1 reviews
 You can limit the total output using normal bash commands. For example, the top 3 search results:
 
 ```
-$ ls .cache/*.txt | ./niche "baseball" | head -3
+$ ls .cache/*.txt | ./main "baseball" | head -3
 
 Concordia University - Wisconsin: 2 reviews
 Dawson Community College: 2 reviews
@@ -73,5 +66,5 @@ $ cd /vagrant
 The examples here have been tested in both environments. Any other options are at your own risk! For example, I just tested from PowerShell (which should work, because Ruby is ostensibly cross-platform :P)
 
 ```
-PS> Get-ChildItem .cache/*.txt | Select-Object -ExpandProperty FullName | ruby .\niche "baseball"
+PS> Get-ChildItem .cache/*.txt | Select-Object -ExpandProperty FullName | ruby .\main "baseball"
 ```

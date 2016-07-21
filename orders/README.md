@@ -1,6 +1,6 @@
-# medSage CSV Importing
+# CSV Importing
 
-This is a simplified version of a piece of functionality we have in medSage. Our customers are medical equipment companies, called DMES. DMEs (Durable Medical Equipment Company) use many different billing systems, some commercial, some homegrown, some are even just an excel spreadsheet. We give various options for synchronizing this data with medSage, one option is the DME can send us CSV files each time things change, and we'll process the CSV to make the appropriate changes in medSage.
+This is a simplified version of a piece of functionality. Our customers are medical equipment companies, called DMES. DMEs (Durable Medical Equipment Company) use many different billing systems, some commercial, some homegrown, some are even just an excel spreadsheet. We give various options for synchronizing this data, one option is the DME can send us CSV files each time things change, and we'll process the CSV to make the appropriate changes.
 
 In this problem we're only going to consider three data types: Patients, Orders, and Invoices. Invoices is a join between Patients and Orders.
 
