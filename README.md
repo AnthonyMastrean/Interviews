@@ -1,3 +1,3 @@
 # interviews
 
-Various interview coding projectsc.
+Various interview coding projects.
